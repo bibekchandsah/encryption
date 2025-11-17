@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encryption Systems - Choose Your Method</title>
+    <!-- favicon -->
+    <link rel="apple-touch-icon" sizes="57x57" href="favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            /* background: white; */
+            background: #ffffff3b;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            /* max-width: 900px; */
+            width: 100%;
+            padding: 50px;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 50px;
+            font-size: 1.1em;
+        }
+
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+            justify-items: center;
+        }
+
+        .method-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            max-width: 390px;
+            width: 100%;
+        }
+
+        .method-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .method-card.adjacent-swap {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .method-card.xor-cipher {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .method-card.aes-cipher {
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+        }
+
+        .method-icon {
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .method-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .method-description {
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            opacity: 0.95;
+        }
+
+        .method-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .method-features li {
+            padding: 5px 0;
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .method-features li:before {
+            content: "✓ ";
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .method-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .method-card:hover .method-button {
+            background: white;
+            color: #667eea;
+        }
+
+        .method-card.xor-cipher:hover .method-button {
+            color: #f5576c;
+        }
+
+        .method-card.aes-cipher:hover .method-button {
+            color: #2e7d32;
+        }
+
+        .info-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .info-section h2 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f5f7fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .badge-simple {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .badge-secure {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .badge-production {
+            background: #e8f5e9;
+            color: #1b5e20;
+        }
+
+        .docs-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .docs-link {
+            /* background: white; */
+            background: #000e72;
+            color: #667eea;
+            padding: 10px 20px;
+            /* border-radius: 8px; */
+            border-radius: 28px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 2px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .docs-link:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .methods-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            /* Responsive table */
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .comparison-table thead {
+                display: none;
+            }
+
+            .comparison-table tbody,
+            .comparison-table tr,
+            .comparison-table td {
+                display: block;
+            }
+
+            .comparison-table tr {
+                margin-bottom: 20px;
+                border: 2px solid #667eea;
+                border-radius: 8px;
+                padding: 10px;
+                background: white;
+            }
+
+            .comparison-table td {
+                text-align: right;
+                padding: 10px;
+                border: none;
+                position: relative;
+                padding-left: 50%;
+            }
+
+            .comparison-table td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                font-weight: bold;
+                color: #667eea;
+            }
+
+            .comparison-table td:first-child {
+                background: #667eea;
+                color: white;
+                text-align: center;
+                padding-left: 10px;
+                font-weight: bold;
+                font-size: 1.1em;
+            }
+
+            .comparison-table td:first-child:before {
+                content: "";
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 15px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            color: white;
+            font-size: 2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            transform: scale(1.2);
+        }
+
+        .modal-body {
+            padding: 30px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-body pre {
+            background: #f5f7fa;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #667eea;
+        }
+
+        .modal-body code {
+            background: #f5f7fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #667eea;
+        }
+
+        .modal-body pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        .modal-body h1,
+        .modal-body h2,
+        .modal-body h3 {
+            color: #667eea;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .modal-body h1 {
+            font-size: 2em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .modal-body h2 {
+            font-size: 1.5em;
+        }
+
+        .modal-body h3 {
+            font-size: 1.2em;
+        }
+
+        .modal-body ul,
+        .modal-body ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .modal-body li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .modal-body p {
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .modal-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .modal-body table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .modal-body table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .modal-body table tr:nth-child(even) {
+            background: #f5f7fa;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #c62828;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔐 Encryption Systems</h1>
+        <p class="subtitle">Choose your encryption method and start securing your data</p>
+
+        <div class="methods-grid">
+            <!-- Adjacent Swap Method -->
+            <a href="adjacent_swap.html" class="method-card adjacent-swap">
+                <div class="method-icon">🔄</div>
+                <div class="method-title">
+                    Adjacent Character Swap
+                    <span class="badge badge-simple">Simple</span>
+                </div>
+                <div class="method-description">
+                    A straightforward encryption method that swaps adjacent character pairs. Perfect for learning and
+                    demonstrations.
+                </div>
+                <ul class="method-features">
+                    <li>No key required (optional seed)</li>
+                    <li>Human-readable output</li>
+                    <li>Perfect for demos & learning</li>
+                    <li>Cross-language compatible</li>
+                    <li>Unicode & emoji support</li>
+                </ul>
+                <div class="method-button">Try Adjacent Swap →</div>
+            </a>
+
+            <!-- XOR+Base64 Method -->
+            <a href="xor_base64.html" class="method-card xor-cipher">
+                <div class="method-icon">🔒</div>
+                <div class="method-title">
+                    XOR+Base64 Cipher
+                    <span class="badge badge-secure">Key-Based</span>
+                </div>
+                <div class="method-description">
+                    A key-based encryption using XOR cipher with Base64 encoding. Better security for data obfuscation.
+                </div>
+                <ul class="method-features">
+                    <li>Requires encryption key</li>
+                    <li>Base64-encoded output</li>
+                    <li>Better security level</li>
+                    <li>Cross-language compatible</li>
+                    <li>Binary-safe encoding</li>
+                </ul>
+                <div class="method-button">Try XOR+Base64 →</div>
+            </a>
+
+            <!-- AES-256 Method -->
+            <a href="aes_encryption.html" class="method-card aes-cipher">
+                <div class="method-icon">🛡️</div>
+                <div class="method-title">
+                    AES-256-GCM <br>
+                    <span class="badge badge-production">Production</span>
+                </div>
+                <div class="method-description">
+                    Military-grade encryption using AES-256 in GCM mode. REAL security for sensitive data and production
+                    use.
+                </div>
+                <ul class="method-features">
+                    <li>Military-grade security</li>
+                    <li>NIST approved standard</li>
+                    <li>Authenticated encryption</li>
+                    <li>Production ready</li>
+                    <li>Tamper detection included</li>
+                </ul>
+                <div class="method-button">Try AES-256 →</div>
+            </a>
+        </div>
+
+        <div class="info-section">
+            <h2>📊 Quick Comparison</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Adjacent Swap</th>
+                        <th>XOR+Base64</th>
+                        <th>AES-256-GCM</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Key Required</strong></td>
+                        <td data-label="Adjacent Swap">❌ Optional</td>
+                        <td data-label="XOR+Base64">✅ Required</td>
+                        <td data-label="AES-256-GCM">✅ Required</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Output Format</strong></td>
+                        <td data-label="Adjacent Swap">Plain text</td>
+                        <td data-label="XOR+Base64">Base64</td>
+                        <td data-label="AES-256-GCM">Base64 JSON</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Security Level</strong></td>
+                        <td data-label="Adjacent Swap">Very Low</td>
+                        <td data-label="XOR+Base64">Low-Medium</td>
+                        <td data-label="AES-256-GCM"><strong>Very High</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Best For</strong></td>
+                        <td data-label="Adjacent Swap">Learning & demos</td>
+                        <td data-label="XOR+Base64">Data obfuscation</td>
+                        <td data-label="AES-256-GCM"><strong>Production use</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Standards</strong></td>
+                        <td data-label="Adjacent Swap">-</td>
+                        <td data-label="XOR+Base64">-</td>
+                        <td data-label="AES-256-GCM"><strong>NIST Approved</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Example Output</strong></td>
+                        <td data-label="Adjacent Swap"><code>hello → ehllo</code></td>
+                        <td data-label="XOR+Base64"><code>hello → AwAVBwo=</code></td>
+                        <td data-label="AES-256-GCM"><code>eyJzYWx0...=</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="docs-links">
+            <a href="#" class="docs-link" onclick="openModal('README.md', 'Documentation'); return false;">📚
+                Documentation</a>
+            <a href="#" class="docs-link" onclick="openModal('QUICKSTART.md', 'Quick Start Guide'); return false;">📖
+                Quick Start</a>
+            <a href="#" class="docs-link" onclick="openModal('XOR_README.md', 'XOR Guide'); return false;">🔐 XOR
+                Guide</a>
+            <a href="#" class="docs-link" onclick="openModal('AES_README.md', 'AES-256 Guide'); return false;">🛡️
+                AES-256 Guide</a>
+            <a href="#" class="docs-link" onclick="openModal('COMPARISON.md', 'Full Comparison'); return false;">⚖️ Full
+                Comparison</a>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="docModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">Document</div>
+                <span class="modal-close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <div class="loading">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        function openModal(filename, title) {
+            const modal = document.getElementById('docModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+
+            modalTitle.textContent = title;
+            modalBody.innerHTML = '<div class="loading">Loading...</div>';
+            modal.style.display = 'block';
+
+            fetch(filename)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to load document');
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    modalBody.innerHTML = marked.parse(text);
+                })
+                .catch(error => {
+                    modalBody.innerHTML = `<div class="error">
+                        <strong>Error:</strong> Unable to load ${filename}<br>
+                        ${error.message}
+                    </div>`;
+                });
+        }
+
+        function closeModal() {
+            document.getElementById('docModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function (event) {
+            const modal = document.getElementById('docModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+
+</html>

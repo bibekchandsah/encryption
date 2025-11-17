@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encryption-Decryption Demo</title>
+    <!-- favicon -->
+    <link rel="apple-touch-icon" sizes="57x57" href="favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        input[type="text"], input[type="number"], textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+        
+        input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-encrypt {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-encrypt:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-decrypt {
+            background: #764ba2;
+            color: white;
+        }
+        
+        .btn-decrypt:hover {
+            background: #653a8a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+        }
+        
+        .btn-clear {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-clear:hover {
+            background: #d0d0d0;
+        }
+        
+        .result-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            position: relative;
+        }
+        
+        .result-label {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+            max-width: 90px;
+        }
+        
+        .copy-btn:hover {
+            background: #5568d3;
+            transform: translateY(-1px);
+        }
+        
+        .copy-btn.copied {
+            background: #43a047;
+        }
+        
+        .result-text {
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        .test-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .test-section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .test-case {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .test-case strong {
+            color: #667eea;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #1565c0;
+        }
+        
+        .key-hint {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Encryption Demo</h1>
+        <p class="subtitle">Cross-Language Compatible Encryption System</p>
+        
+        <div class="input-group">
+            <label for="inputText">Enter Text:</label>
+            <textarea id="inputText" placeholder="Type something to encrypt or decrypt...">bibek</textarea>
+        </div>
+        
+        <div class="input-group">
+            <label for="seedInput">Seed (Optional):</label>
+            <input type="number" id="seedInput" placeholder="Enter numeric seed (leave empty for no seed)" value="">
+            <div class="key-hint">💡 Optional numeric value to customize encryption. Use same seed for decryption.</div>
+        </div>
+        
+        <div class="button-group">
+            <button class="btn-encrypt" onclick="encryptText()">🔒 Encrypt</button>
+            <button class="btn-decrypt" onclick="decryptText()">🔓 Decrypt</button>
+            <button class="btn-clear" onclick="clearAll()">🗑️ Clear</button>
+        </div>
+        
+        <div id="resultBox" class="result-box" style="display: none;">
+            <div class="result-label">
+                <span>Result:</span>
+                <button class="copy-btn" onclick="copyResult()">
+                    <span>📋</span> Copy
+                </button>
+            </div>
+            <div class="result-text" id="resultText"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📋 Example Test Cases</h2>
+            <div class="test-case">
+                <strong>Input:</strong> bibek → <strong>Encrypted:</strong> ibebk (no seed)
+            </div>
+            <div class="test-case">
+                <strong>Input:</strong> hello → <strong>Encrypted:</strong> ehllo (no seed)
+            </div>
+            <div class="test-case">
+                <strong>Input:</strong> bibek (seed=2) → <strong>Encrypted:</strong> keibb
+            </div>
+            <div class="test-case">
+                <strong>Input:</strong> hello (seed=3) → <strong>Encrypted:</strong> llhoe
+            </div>
+            <div class="test-case">
+                <strong>Input:</strong> 12345 (seed=1) → <strong>Encrypted:</strong> 15324
+            </div>
+        </div>
+        
+        <div class="info-box">
+            ℹ️ <strong>Algorithm:</strong> Adjacent Character Swap<br>
+            This encryption produces identical results in Python, JavaScript, and other languages.<br><br>
+            ⚠️ <strong>Security Note:</strong> This is for learning/demos only. For real security, use <strong>AES-256</strong> encryption.
+        </div>
+    </div>
+    
+    <script src="encrypt.js"></script>
+    <script>
+        function encryptText() {
+            const inputText = document.getElementById('inputText').value;
+            const seedInput = document.getElementById('seedInput').value;
+            const seed = seedInput ? parseInt(seedInput) : 0;
+            
+            const encrypted = encrypt(inputText, seed);
+            showResult(encrypted);
+        }
+        
+        function decryptText() {
+            const inputText = document.getElementById('inputText').value;
+            const seedInput = document.getElementById('seedInput').value;
+            const seed = seedInput ? parseInt(seedInput) : 0;
+            
+            const decrypted = decrypt(inputText, seed);
+            showResult(decrypted);
+        }
+        
+        function clearAll() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('seedInput').value = '';
+            document.getElementById('resultBox').style.display = 'none';
+        }
+        
+        function showResult(text) {
+            const resultBox = document.getElementById('resultBox');
+            const resultText = document.getElementById('resultText');
+            resultText.textContent = text;
+            resultBox.style.display = 'block';
+        }
+        
+        function copyResult() {
+            const resultText = document.getElementById('resultText').textContent;
+            navigator.clipboard.writeText(resultText).then(() => {
+                const copyBtn = document.querySelector('.copy-btn');
+                const originalHTML = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<span>✓</span> Copied!';
+                copyBtn.classList.add('copied');
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalHTML;
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy: ' + err);
+            });
+        }
+    </script>
+</body>
+</html>

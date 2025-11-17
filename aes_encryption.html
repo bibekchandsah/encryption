@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AES-256-GCM Encryption Demo</title>
+    <!-- favicon -->
+    <link rel="apple-touch-icon" sizes="57x57" href="favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #2e7d32;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+        
+        .security-badge {
+            background: linear-gradient(135deg, #43a047, #2e7d32);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        .security-badge span {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        input[type="text"], input[type="password"], textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+        
+        input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
+            outline: none;
+            border-color: #2e7d32;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-encrypt {
+            background: #43a047;
+            color: white;
+        }
+        
+        .btn-encrypt:hover {
+            background: #2e7d32;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.4);
+        }
+        
+        .btn-decrypt {
+            background: #1b5e20;
+            color: white;
+        }
+        
+        .btn-decrypt:hover {
+            background: #0d3d13;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(27, 94, 32, 0.4);
+        }
+        
+        .btn-generate {
+            background: #00796b;
+            color: white;
+        }
+        
+        .btn-generate:hover {
+            background: #004d40;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 121, 107, 0.4);
+        }
+        
+        .btn-clear {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-clear:hover {
+            background: #d0d0d0;
+        }
+        
+        .result-box {
+            background: #f8f9fa;
+            border-left: 4px solid #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            display: none;
+            position: relative;
+        }
+        
+        .result-label {
+            color: #2e7d32;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .copy-btn {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+            max-width: 90px;
+        }
+        
+        .copy-btn:hover {
+            background: #1b5e20;
+            transform: translateY(-1px);
+        }
+        
+        .copy-btn.copied {
+            background: #43a047;
+        }
+        
+        .result-text {
+            color: #333;
+            font-size: 1em;
+        }
+        
+        .error-box {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .error-label {
+            color: #f44336;
+            font-weight: 600;
+        }
+        
+        .info-box {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #1b5e20;
+        }
+        
+        .key-hint {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 10px;
+        }
+        
+        .feature-list li {
+            padding: 5px 0;
+            color: #1b5e20;
+        }
+        
+        .feature-list li:before {
+            content: "✓ ";
+            font-weight: bold;
+            color: #43a047;
+            margin-right: 8px;
+        }
+        
+        .tab-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background: #2e7d32;
+            color: white;
+            border-color: #2e7d32;
+        }
+        
+        .tab:hover:not(.active) {
+            background: #e8f5e9;
+            border-color: #43a047;
+        }
+        
+        .mode-content {
+            display: none;
+        }
+        
+        .mode-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 AES-256-GCM Encryption</h1>
+        <p class="subtitle">Production-Grade Military-Level Encryption</p>
+        
+        <div class="security-badge">
+            <span>🛡️</span> REAL SECURITY: AES-256-GCM with PBKDF2 Key Derivation
+        </div>
+        
+        <div class="tab-group">
+            <div class="tab active" onclick="switchMode('password')">Password Mode</div>
+            <div class="tab" onclick="switchMode('key')">Key Mode</div>
+        </div>
+        
+        <!-- Password Mode -->
+        <div id="passwordMode" class="mode-content active">
+            <div class="input-group">
+                <label for="inputText1">Enter Text:</label>
+                <textarea id="inputText1" placeholder="Type something to encrypt or decrypt...">Hello, this is a secret message!</textarea>
+            </div>
+            
+            <div class="input-group">
+                <label for="passwordInput">Password:</label>
+                <input type="password" id="passwordInput" placeholder="Enter your password..." value="my_secure_password">
+                <div class="key-hint">🔑 Use a strong password. Same password needed for decryption.</div>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn-encrypt" onclick="encryptWithPassword()">🔒 Encrypt</button>
+                <button class="btn-decrypt" onclick="decryptWithPassword()">🔓 Decrypt</button>
+                <button class="btn-clear" onclick="clearPassword()">🗑️ Clear</button>
+            </div>
+        </div>
+        
+        <!-- Key Mode -->
+        <div id="keyMode" class="mode-content">
+            <div class="input-group">
+                <label for="inputText2">Enter Text:</label>
+                <textarea id="inputText2" placeholder="Type something to encrypt or decrypt...">Direct key encryption!</textarea>
+            </div>
+            
+            <div class="input-group">
+                <label for="keyInput">256-bit Key (Base64):</label>
+                <input type="text" id="keyInput" placeholder="Generate or paste your 256-bit key..." value="">
+                <div class="key-hint">🔑 Click "Generate Key" to create a random 256-bit key.</div>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn-generate" onclick="generateNewKey()">⚡ Generate Key</button>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn-encrypt" onclick="encryptWithKey()">🔒 Encrypt</button>
+                <button class="btn-decrypt" onclick="decryptWithKey()">🔓 Decrypt</button>
+                <button class="btn-clear" onclick="clearKey()">🗑️ Clear</button>
+            </div>
+        </div>
+        
+        <div id="resultBox" class="result-box">
+            <div class="result-label">
+                <span>Result:</span>
+                <button class="copy-btn" onclick="copyResult()">
+                    <span>📋</span> Copy
+                </button>
+            </div>
+            <div class="result-text" id="resultText"></div>
+        </div>
+        
+        <div id="errorBox" class="error-box">
+            <div class="error-label" id="errorText"></div>
+        </div>
+        
+        <div class="info-box">
+            <strong>🛡️ Production-Grade Security Features:</strong>
+            <ul class="feature-list">
+                <li>AES-256-GCM authenticated encryption</li>
+                <li>PBKDF2 key derivation (100,000 iterations)</li>
+                <li>Random nonces for each encryption</li>
+                <li>Authenticated encryption with tamper detection</li>
+                <li>Cross-platform compatible (Python, JavaScript, etc.)</li>
+                <li>Suitable for sensitive data and production use</li>
+            </ul>
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #c8e6c9;">
+                <strong>📚 Technical Details:</strong><br>
+                • Algorithm: AES-256-GCM (NIST approved)<br>
+                • Key Size: 256 bits<br>
+                • Nonce Size: 96 bits<br>
+                • Authentication Tag: 128 bits<br>
+                • KDF: PBKDF2-HMAC-SHA256 (100K iterations)
+            </div>
+        </div>
+    </div>
+    
+    <script src="aes_encrypt.js"></script>
+    <script>
+        function switchMode(mode) {
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update content
+            document.querySelectorAll('.mode-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(mode + 'Mode').classList.add('active');
+            
+            hideMessages();
+        }
+        
+        async function encryptWithPassword() {
+            const inputText = document.getElementById('inputText1').value;
+            const password = document.getElementById('passwordInput').value;
+            
+            hideMessages();
+            
+            if (!password) {
+                showError("Please enter a password!");
+                return;
+            }
+            
+            try {
+                const encrypted = await aesEncrypt(inputText, password);
+                showResult(encrypted);
+            } catch (e) {
+                showError("Encryption failed: " + e.message);
+            }
+        }
+        
+        async function decryptWithPassword() {
+            const inputText = document.getElementById('inputText1').value;
+            const password = document.getElementById('passwordInput').value;
+            
+            hideMessages();
+            
+            if (!password) {
+                showError("Please enter a password!");
+                return;
+            }
+            
+            try {
+                const decrypted = await aesDecrypt(inputText, password);
+                showResult(decrypted);
+            } catch (e) {
+                showError("Decryption failed: " + e.message);
+            }
+        }
+        
+        async function generateNewKey() {
+            hideMessages();
+            try {
+                const key = await generateKey();
+                document.getElementById('keyInput').value = key;
+                showResult("Key generated! You can now use it for encryption.");
+            } catch (e) {
+                showError("Key generation failed: " + e.message);
+            }
+        }
+        
+        async function encryptWithKey() {
+            const inputText = document.getElementById('inputText2').value;
+            const key = document.getElementById('keyInput').value;
+            
+            hideMessages();
+            
+            if (!key) {
+                showError("Please generate or enter a key!");
+                return;
+            }
+            
+            try {
+                const encrypted = await aesEncryptWithKey(inputText, key);
+                showResult(encrypted);
+            } catch (e) {
+                showError("Encryption failed: " + e.message);
+            }
+        }
+        
+        async function decryptWithKey() {
+            const inputText = document.getElementById('inputText2').value;
+            const key = document.getElementById('keyInput').value;
+            
+            hideMessages();
+            
+            if (!key) {
+                showError("Please enter a key!");
+                return;
+            }
+            
+            try {
+                const decrypted = await aesDecryptWithKey(inputText, key);
+                showResult(decrypted);
+            } catch (e) {
+                showError("Decryption failed: " + e.message);
+            }
+        }
+        
+        function clearPassword() {
+            document.getElementById('inputText1').value = '';
+            document.getElementById('passwordInput').value = '';
+            hideMessages();
+        }
+        
+        function clearKey() {
+            document.getElementById('inputText2').value = '';
+            document.getElementById('keyInput').value = '';
+            hideMessages();
+        }
+        
+        function showResult(text) {
+            const resultBox = document.getElementById('resultBox');
+            const resultText = document.getElementById('resultText');
+            resultText.textContent = text;
+            resultBox.style.display = 'block';
+        }
+        
+        function showError(message) {
+            const errorBox = document.getElementById('errorBox');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorBox.style.display = 'block';
+        }
+        
+        function hideMessages() {
+            document.getElementById('resultBox').style.display = 'none';
+            document.getElementById('errorBox').style.display = 'none';
+        }
+        
+        function copyResult() {
+            const resultText = document.getElementById('resultText').textContent;
+            navigator.clipboard.writeText(resultText).then(() => {
+                const copyBtn = document.querySelector('.copy-btn');
+                const originalHTML = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<span>✓</span> Copied!';
+                copyBtn.classList.add('copied');
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalHTML;
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy: ' + err);
+            });
+        }
+    </script>
+</body>
+</html>
